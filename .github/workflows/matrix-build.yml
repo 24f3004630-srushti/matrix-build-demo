@@ -1,0 +1,38 @@
+name: Multi-Platform Matrix Build (edb8535)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Matrix Build Job
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: [14, 16, 18]  # Node.js versions (3 variants)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: matrix-edb8535
+        run: echo "Building for Node.js version ${{ matrix.version }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.version }}
+
+      - name: Generate build artifact
+        run: |
+          echo "Build output for Node.js version ${{ matrix.version }}" > output-${{ matrix.version }}.txt
+          echo "Timestamp: $(date)" >> output-${{ matrix.version }}.txt
+          cat output-${{ matrix.version }}.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-edb8535-v${{ matrix.version }}
+          path: output-${{ matrix.version }}.txt
